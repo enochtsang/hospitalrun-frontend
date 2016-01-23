@@ -32,9 +32,20 @@ test('create invoice', function(assert) {
     fillIn('.invoice-patient .tt-input', 'Joe Bagadonuts - TCH 00001');
     triggerEvent('.invoice-patient .tt-input', 'input');
     triggerEvent('.invoice-patient .tt-input', 'blur');
-    waitToAppear('.invoice-visit option:contains(11/1/2015 - 11/12/2015 (Admission)');
+
+    var utcStartTime = moment.utc("2015-11-1 05:00:00").format('YYYY-MM-DD HH:mm:ss');          
+    var localStartTime  = moment.utc(utcStartTime).toDate();
+    localStartTime = moment(localStartTime).format('M/D/YYYY');
+
+    var utcEndTime = moment.utc("2015-11-12 05:00:00").format('YYYY-MM-DD HH:mm:ss');          
+    var localEndTime  = moment.utc(utcEndTime).toDate();
+    localEndTime = moment(localEndTime).format('M/D/YYYY');
+
+    var dateRange = localStartTime + ' - ' + localEndTime;
+    
+    waitToAppear('.invoice-visit option:contains(' + dateRange + ' (Admission)');
     andThen(function() {
-      select('.invoice-visit', '11/1/2015 - 11/12/2015 (Admission)');
+      select('.invoice-visit', dateRange + ' (Admission)');
       fillIn('.external-invoice-no input', 'inv000002');
     });
     waitToAppear('button:contains(Update)');
